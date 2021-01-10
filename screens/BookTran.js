@@ -17,5 +17,7 @@ const styles = StyleSheet.create({
     textAlign:'center',
     textSize:20,
     justifyContent:'center',
+    marginTop:100,
+    color:'orange',
   }
 })
