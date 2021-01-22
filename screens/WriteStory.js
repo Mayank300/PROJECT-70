@@ -1,6 +1,8 @@
 import React from 'react'
 import {ImageBackground, View, Text, StyleSheet,TouchableOpacity, Image} from 'react-native'
 import { TextInput } from 'react-native-paper';
+import firebase from 'firebase';
+import db from '../config';
 
 const image = { uri: "https://wallpapercave.com/wp/wp2297884.jpg" };
 
@@ -8,12 +10,47 @@ const image = { uri: "https://wallpapercave.com/wp/wp2297884.jpg" };
 export default class WriteStory extends React.Component{
   constructor(props) {
     super(props);
-    this.state = {value: ''};
-    this.handleChange = this.handleChange.bind(this);
+    this.handleTitle = this.handleTitle.bind(this);
+    this.handleAuthor = this.handleAuthor.bind(this);
+    this.handleContent = this.handleContent.bind(this);
+    this.state = {
+      title: '',
+      author: '',
+      content: ''
+    };
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
+  handleTitle(event) {
+    this.setState({title: event.target.value});
+    console.log("title is working");
+  }
+
+  handleAuthor(event) {
+    this.setState({author: event.target.value});
+    console.log("title is author");
+
+  }
+
+  handleContent(event) {
+    this.setState({content: event.target.value});
+    console.log("title is content");
+
+  }
+
+  submitStory = async ()=>{
+    //add a story
+    db.collection("writestory").add({
+      'title' : this.state.title,
+      'author' : this.state.author,
+      'content' : this.state.content,
+      'date'   : firebase.firestore.Timestamp.now().toDate()
+    })
+
+    this.setState({
+      title: '',
+      author: '',
+      content: ''
+    })
   }
 
     render(){
@@ -23,24 +60,26 @@ export default class WriteStory extends React.Component{
             <Text style={styles.headers}>WRITE STORY</Text>
             <TextInput
               label="STORY TITLE"
-              value={this.state.value}
-              onChange={this.handleChange} 
+              value={this.state.title}
+              onChange={this.handleTitle} 
               style={styles.textInput}
             />
             <TextInput
               label="AUTHOR"
-              value={this.state.value}
-              onChange={this.handleChange} 
+              value={this.state.author}
+              onChange={this.handleAuthor} 
               style={styles.textInput}
             /> 
             <TextInput
               label="WRITE YOUR STORY"
-              value={this.state.value}
-              onChange={this.handleChange} 
+              value={this.state.content}
+              onChange={this.handleContent} 
               style={styles.textInput}
               multiline={true}
             />         
-            <TouchableOpacity style={styles.buttonStyle}>SUBMIT</TouchableOpacity>
+            <TouchableOpacity onPress={this.submitStory}>
+              <Text style={styles.buttonStyle}>SUBMIT</Text>
+            </TouchableOpacity>
           </ImageBackground>
         </View>
       )
@@ -89,5 +128,9 @@ const styles = StyleSheet.create({
   },
   buttonText:{
     fontSize: 30,
+  },
+  check:{
+    fontSize: 30, 
+
   }
 });
